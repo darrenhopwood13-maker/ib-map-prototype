@@ -1,18 +1,82 @@
-<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>instructBrain map - three styles</title>
-<style>body{margin:0;background:#0a1024;color:#eaf0ff;font:16px/1.55 -apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:760px;margin:0 auto;padding:40px 22px}h1{font-size:26px;margin:0 0 6px}
-p{color:#93a4c6;margin:0 0 22px}a.card{display:block;text-decoration:none;color:inherit;border:1px solid #22315a;
-border-radius:14px;padding:16px 18px;margin-bottom:12px;background:#101a35}
-a.card:hover{border-color:#57FF00}a.card b{display:block;font-size:17px;margin-bottom:3px}
-a.card span{color:#93a4c6;font-size:13.5px}i{color:#57FF00;font-style:normal;font-weight:800;font-size:11px;
-letter-spacing:.1em;text-transform:uppercase}</style></head><body><div class="wrap">
-<h1>Where the work is - three directions</h1>
-<p>Same real data, same interaction. Click a pin or a row on any of them.</p>
-<a class="card" href="a-console.html"><i>Recommended</i><b>A - Console</b>
-<span>The navy control room carried onto the map. Laser Green for live, red for late. Builds on what the dashboard already is.</span></a>
-<a class="card" href="b-atlas.html"><b>B - Atlas</b>
-<span>Paper, serif and brass. Reads like a site drawing or a surveyor's plate. Warm, distinctive, less "software".</span></a>
-<a class="card" href="c-blueprint.html"><b>C - Blueprint</b>
-<span>Grid lines, cyan line work, one hot orange. The most technical of the three, closest to a drawing office.</span></a>
-</div></body></html>
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>instructBrain map - style directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide&family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap">
+<style>
+:root{
+  --background:oklch(38.6% .105 262.6);
+  --foreground:oklch(98.5% 0 0);
+  --surface-sunken:oklch(34.2% .091 262.9);
+  --card:oklch(35.6% .076 262.6);
+  --brand-accent:oklch(87.73% .2803 139.6);
+  --brand-accent-soft:oklch(87.73% .2803 139.6/.16);
+  --glass-accent-border:oklch(87.73% .2803 139.6/.55);
+  --muted-foreground:oklch(88.7% .011 261.8);
+  --border:oklch(100% 0 0/.14);
+  --radius:.75rem;
+  --gradient-panel:linear-gradient(180deg, oklch(34.2% .091 262.9/.9) 0%, oklch(36.7% .1 262.8/.96) 100%);
+  --font-display:"Sora","Manrope",ui-sans-serif,system-ui,sans-serif;
+  --font-wordmark:"Audiowide","Sora",ui-sans-serif,system-ui,sans-serif;
+  --font-sans:"Manrope",ui-sans-serif,system-ui,sans-serif;
+}
+body{margin:0;min-height:100vh;background:var(--background);color:var(--foreground);
+  font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:44px 20px 60px}
+.wordmark{font-family:var(--font-wordmark);font-size:22px;line-height:1;letter-spacing:.2px;
+  display:block;margin-bottom:26px;text-decoration:none;color:var(--foreground)}
+.wordmark i{font-style:normal;color:var(--brand-accent)}
+h1{font-family:var(--font-display);font-size:27px;font-weight:700;letter-spacing:-.4px;margin:0 0 8px}
+p.lede{color:var(--muted-foreground);margin:0 0 24px;font-size:14.5px;line-height:1.6;max-width:56ch}
+a.card{display:block;text-decoration:none;color:inherit;background:var(--gradient-panel);
+  border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;
+  transition:border-color .15s}
+a.card:hover{border-color:var(--glass-accent-border)}
+a.card b{display:block;font-family:var(--font-display);font-size:17px;margin-bottom:4px}
+a.card span{color:var(--muted-foreground);font-size:13.5px;line-height:1.55;display:block}
+a.card.chosen{border-color:var(--glass-accent-border);background:var(--card)}
+i.pill{display:inline-block;margin-bottom:9px;font-size:10px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;font-style:normal;color:var(--brand-accent);
+  background:var(--brand-accent-soft);border:1px solid var(--glass-accent-border);
+  padding:5px 10px;border-radius:999px}
+.note{margin-top:26px;padding-top:18px;border-top:1px solid var(--border);
+  font-size:11.5px;line-height:1.65;color:var(--muted-foreground)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="wordmark" href="/ib-map-prototype/"><b>instruct</b><i>Brain</i></a>
+  <h1>Where the work is - style directions</h1>
+  <p class="lede">Same real data, same interaction. Click a pin or a row on any of them.</p>
+
+  <a class="card chosen" href="a-console.html">
+    <i class="pill">Chosen - rebuilt to the app's own tokens</i>
+    <b>A - Console</b>
+    <span>The navy console carried onto the map. Ground, cards, borders, radii and type all use the
+    instructBrain tokens exactly as the app declares them - oklch navy, Laser Green for live,
+    the product accent for the wordmark. Vector basemap styled in the same palette.</span>
+  </a>
+
+  <a class="card" href="b-atlas.html">
+    <b>B - Atlas</b>
+    <span>Paper, serif and brass. Reads like a site drawing or a surveyor's plate. Warm,
+    distinctive, less "software". Not chosen.</span>
+  </a>
+
+  <a class="card" href="c-blueprint.html">
+    <b>C - Blueprint</b>
+    <span>Grid lines, cyan line work, one hot colour. The most technical of the three, closest to a
+    drawing office. Not chosen.</span>
+  </a>
+
+  <div class="note">B and C are the original studies and still carry eyeballed hexes; A is the one
+    rebuilt against <code>instructbrain.com</code>'s served stylesheet. Token values are copied
+    verbatim in oklch from that stylesheet - <code>--brand-blue:oklch(38.6% .105 262.6)</code>
+    resolves to <code>#24417b</code>, the same navy as the company badge.</div>
+</div>
+</body>
+</html>

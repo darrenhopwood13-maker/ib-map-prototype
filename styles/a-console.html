@@ -3,114 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>instructBrain - A - Console (style study)</title>
+<title>instructBrain - map, console style (A)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide&family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <style>
-  *{box-sizing:border-box}
-  body{margin:0}
-  header{padding:13px 20px;display:flex;align-items:center;gap:14px}
-  header .wordmark{font-size:17px;letter-spacing:-.2px}
-  header .wordmark b{font-weight:800} header .wordmark span{font-weight:800}
-  header .tag{margin-left:auto;font-size:10.5px;font-weight:800;letter-spacing:.1em;
-      padding:5px 9px;text-transform:uppercase;border-radius:999px}
-  .wrap{display:grid;grid-template-columns:1fr 390px;height:calc(100vh - 56px)}
-  #map{width:100%;height:100%}
-  aside{overflow:auto;padding:18px}
-  h1{font-size:20px;margin:0 0 2px;font-weight:800}
-  .sub{font-size:12.5px;margin-bottom:14px}
-  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
-  .tile{padding:9px 10px}
-  .tile .n{font-size:22px;font-weight:800;letter-spacing:-.5px}
-  .tile .l{font-size:10px;text-transform:uppercase;font-weight:800}
-  .pin-list{display:flex;flex-direction:column;gap:8px}
-  .pin-row{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:10px;
-      cursor:pointer;font:inherit}
-  .dot{width:11px;height:11px;margin-top:5px;flex:0 0 auto}
-  .pin-row .nm{font-weight:700;font-size:13.5px;display:block}
-  .pin-row .ad{font-size:12px;display:block;margin-top:1px}
-  .card{padding:14px;margin-top:14px}
-  .card h2{font-size:16px;margin:0 0 3px}
-  .card .addr{font-size:12.5px;margin-bottom:10px;color:var(--dim)}
-  .kv{display:flex;justify-content:space-between;font-size:13px;padding:5px 0}
-  .sv{margin-top:12px;overflow:hidden}
-  .sv .err{font-size:12.5px;padding:16px;line-height:1.6;min-height:140px}
-  .note{font-size:11.5px;margin-top:10px;line-height:1.5}
-  .flag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-      padding:4px 7px;margin-bottom:10px}
-  .styles{display:flex;gap:6px;margin-bottom:14px}
-  .styles a{font-size:11px;text-decoration:none;padding:5px 8px;border:1px solid currentColor;opacity:.55}
-  .styles a.on{opacity:1;font-weight:800}
-  @media (max-width:900px){.wrap{grid-template-columns:1fr;height:auto}#map{height:52vh}}
-</style>
-<style>
-  :root{--bg:#0a1024;--panel:#101a35;--panel2:#0d1730;--line:#22315a;--ink:#eaf0ff;--dim:#93a4c6;
-        --accent:#57FF00;--fail:#ff5a4d;--radius:14px}
-  body{background:var(--bg);color:var(--ink);
-       font:15px/1.5 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif}
-  header{background:linear-gradient(180deg,#16234a,#101a35);border-bottom:1px solid var(--line);color:#fff}
-  header .wordmark b{color:#fff}
-  header .wordmark span{color:var(--accent)}
-  header .tag{background:rgba(87,255,0,.12);color:var(--accent);border:1px solid rgba(87,255,0,.35)}
-  aside{background:linear-gradient(180deg,#0d1730,#0a1024);border-left:1px solid var(--line)}
-  h1{color:#fff}
-  .sub{color:var(--dim)}
-  .tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
-  .tile .n{color:#fff}
-  .tile .l{color:var(--dim)}
-  .tile.bad .n{color:var(--fail)}
-  .pin-row{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:var(--radius)}
-  .pin-row:hover{border-color:var(--accent)}
-  .pin-row .nm{color:#fff}
-  .pin-row .ad{color:var(--dim)}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
-  .card h2{color:#fff}
-  .kv{border-top:1px dashed var(--line);color:var(--dim)}
-  .kv b{color:#fff}
-  .flag{color:#0a1024;background:var(--accent);border:none}
-  .note{color:var(--dim)}
-  .sv{background:#0a1024;border:1px solid var(--line)}
-  .sv .err{color:var(--dim)}
-  .dot{background:var(--accent)}
-  .dot.late{background:var(--fail)}
-  .maplibregl-ctrl-attrib{background:rgba(10,16,36,.85)!important;color:#93a4c6!important}
-  .maplibregl-ctrl-attrib a{color:#93a4c6!important}
-  .maplibregl-ctrl-group{background:#101a35!important;border:1px solid #22315a!important}
-  .maplibregl-ctrl-group button+button{border-top:1px solid #22315a!important}
-  .maplibregl-ctrl-group button span{filter:invert(1)}
+/* ------------------------------------------------------------------
+   TOKENS - copied verbatim from the served instructBrain stylesheet
+   (https://instructbrain.com/assets/styles-*.css), oklch notation and all.
+   Nothing here is eyeballed. --brand-blue resolves to #24417b, the same
+   navy as the company badge.
+   ------------------------------------------------------------------ */
+:root{
+  --radius:.75rem;
+  --background:oklch(38.6% .105 262.6);
+  --foreground:oklch(98.5% 0 0);
+  --surface:oklch(38.6% .105 262.6);
+  --surface-raised:oklch(36.7% .1 262.8);
+  --surface-sunken:oklch(34.2% .091 262.9);
+  --card:oklch(35.6% .076 262.6);
+  --card-foreground:oklch(98.5% 0 0);
+  --brand-blue:oklch(38.6% .105 262.6);
+  --brand-blue-soft:oklch(32.3% .059 262.7);
+  --brand-blue-ink:oklch(88.7% .011 261.8);
+  --product-accent:oklch(87.73% .2803 139.6);
+  --brand-accent:var(--product-accent);
+  --brand-accent-light:oklch(95.66% .0929 133.5);
+  --brand-accent-deep:oklch(55.66% .1764 139.3);
+  --brand-accent-soft:oklch(87.73% .2803 139.6/.16);
+  --brand-accent-ink:oklch(87.73% .2803 139.6);
+  --gradient-gloss:linear-gradient(180deg, var(--brand-accent) 0%, var(--brand-accent-deep) 100%);
+  --blueprint-grid:linear-gradient(to right, oklch(98.5% 0 0/.07) 1px, transparent 1px), linear-gradient(to bottom, oklch(98.5% 0 0/.07) 1px, transparent 1px);
+  --glass-surface:oklch(100% 0 0/.09);
+  --glass-surface-hover:oklch(100% 0 0/.15);
+  --glass-border:oklch(100% 0 0/.22);
+  --glass-highlight:oklch(100% 0 0/.22);
+  --glass-accent-surface:oklch(87.73% .2803 139.6/.16);
+  --glass-accent-border:oklch(87.73% .2803 139.6/.55);
+  --gradient-panel:linear-gradient(180deg, oklch(34.2% .091 262.9/.9) 0%, oklch(36.7% .1 262.8/.96) 100%);
+  --primary:oklch(87.73% .2803 139.6);
+  --primary-foreground:oklch(29.76% .0805 263.2);
+  --secondary:oklch(32.3% .059 262.7);
+  --secondary-foreground:oklch(98.5% 0 0);
+  --muted:oklch(41.7% .06 263.1);
+  --muted-foreground:oklch(88.7% .011 261.8);
+  --accent:oklch(87.73% .2803 139.6/.16);
+  --accent-foreground:oklch(87.73% .2803 139.6);
+  --border:oklch(100% 0 0/.14);
+  --border-strong:oklch(87.73% .2803 139.6/.62);
+  --pass:oklch(86% .17 158);
+  --fail:oklch(74% .2 13);
+  --fail-soft:oklch(37% .12 13);
+  --warn:oklch(93% .16 103);
+  --flag:oklch(85% .12 215);
+  --font-display:"Sora","Manrope",ui-sans-serif,system-ui,sans-serif;
+  --font-wordmark:"Audiowide","Sora",ui-sans-serif,system-ui,sans-serif;
+  --font-sans:"Manrope",ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--background);color:var(--foreground);font-family:var(--font-sans);
+     -webkit-font-smoothing:antialiased}
+
+/* ---------- app chrome ---------- */
+header{height:64px;display:flex;align-items:center;gap:26px;padding:0 22px;
+  background:var(--gradient-panel);border-bottom:1px solid var(--border);
+  position:relative;z-index:5}
+header::after{content:"";position:absolute;inset:0;background-image:var(--blueprint-grid);
+  background-size:32px 32px;opacity:.5;pointer-events:none}
+.wordmark{font-family:var(--font-wordmark);font-size:24px;letter-spacing:.2px;line-height:1;
+  color:var(--foreground);text-decoration:none;position:relative;z-index:1}
+.wordmark b{font-weight:400;color:var(--foreground)}
+.wordmark i{font-style:normal;color:var(--brand-accent)}
+nav{display:flex;gap:4px;position:relative;z-index:1}
+nav a{font-size:13.5px;font-weight:600;color:var(--muted-foreground);text-decoration:none;
+  padding:9px 12px;border-radius:9px;line-height:1}
+nav a:hover{background:var(--glass-surface);color:var(--foreground)}
+nav a.on{background:var(--glass-accent-surface);color:var(--brand-accent);
+  box-shadow:inset 0 0 0 1px var(--glass-accent-border)}
+.tag{margin-left:auto;position:relative;z-index:1;display:inline-flex;align-items:center;gap:7px;
+  font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:7px 12px;border-radius:999px;color:var(--brand-accent);
+  background:var(--glass-accent-surface);border:1px solid var(--glass-accent-border)}
+.tag s{width:6px;height:6px;border-radius:50%;background:var(--brand-accent);text-decoration:none}
+
+/* ---------- split ---------- */
+.wrap{display:grid;grid-template-columns:1fr 404px;height:calc(100vh - 64px)}
+#map{width:100%;height:100%;background:var(--surface-sunken)}
+
+aside{background:var(--gradient-panel);border-left:1px solid var(--border);overflow:auto;
+  padding:22px 20px 26px}
+.eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--brand-accent);margin-bottom:9px}
+h1{font-family:var(--font-display);font-size:21px;line-height:1.2;margin:0 0 6px;
+  font-weight:700;color:var(--foreground);letter-spacing:-.3px}
+.sub{font-size:13px;line-height:1.55;color:var(--muted-foreground);margin-bottom:18px;
+  max-width:34ch}
+
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.tile{padding:12px 13px;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:inset 0 1px 0 var(--glass-highlight)}
+.tile .n{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:-.8px;
+  line-height:1;color:var(--foreground)}
+.tile .l{margin-top:7px;font-size:10px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted-foreground)}
+.tile.late .n{color:var(--fail)}
+
+.legend{display:flex;gap:16px;margin:0 0 12px;font-size:11.5px;color:var(--muted-foreground)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;border-radius:50%;background:var(--brand-accent)}
+.legend i.bad{background:var(--fail)}
+
+.pin-list{display:flex;flex-direction:column;gap:8px}
+.pin-row{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;
+  padding:11px 12px;font:inherit;cursor:pointer;color:var(--foreground);
+  background:var(--surface-sunken);border:1px solid var(--border);border-radius:var(--radius);
+  transition:border-color .15s,background .15s}
+.pin-row:hover{border-color:var(--glass-accent-border);background:var(--brand-blue-soft)}
+.pin-row[aria-current="true"]{border-color:var(--border-strong);background:var(--accent)}
+.dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:0 0 auto;
+  background:var(--brand-accent);box-shadow:0 0 0 3px oklch(87.73% .2803 139.6/.18)}
+.dot.bad{background:var(--fail);box-shadow:0 0 0 3px oklch(74% .2 13/.18)}
+.pin-row .nm{display:block;font-weight:700;font-size:13.5px;line-height:1.3}
+.pin-row .ad{display:block;font-size:11.5px;color:var(--muted-foreground);margin-top:2px}
+.pin-row[disabled]{opacity:.55;cursor:default}
+
+.card{margin-top:16px;padding:16px;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:inset 0 1px 0 var(--glass-highlight)}
+.card h2{font-family:var(--font-display);font-size:16px;margin:0 0 4px;font-weight:700;
+  color:var(--foreground)}
+.card .addr{font-size:12px;line-height:1.5;color:var(--muted-foreground);margin-bottom:12px}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:8px 0;
+  border-top:1px solid var(--border);color:var(--muted-foreground)}
+.kv b{color:var(--foreground);font-weight:700;font-variant-numeric:tabular-nums}
+.sv{margin-top:13px;border:1px solid var(--border);border-radius:10px;overflow:hidden;
+  background:var(--surface-sunken)}
+.sv .err{padding:15px;font-size:12px;line-height:1.6;color:var(--muted-foreground);min-height:132px;
+  display:flex;flex-direction:column;justify-content:center;gap:4px}
+.sv .err b{color:var(--foreground);font-family:var(--font-display);font-size:12.5px}
+.note{font-size:11px;line-height:1.6;color:var(--muted-foreground);margin-top:16px;
+  padding-top:14px;border-top:1px solid var(--border)}
+
+/* ---------- map controls in brand dress ---------- */
+.maplibregl-ctrl-group{background:var(--card)!important;border:1px solid var(--border)!important;
+  border-radius:10px!important;box-shadow:0 6px 18px oklch(20% .06 262/.45)!important;overflow:hidden}
+.maplibregl-ctrl-group button+button{border-top:1px solid var(--border)!important}
+.maplibregl-ctrl-group button span{filter:invert(1) brightness(1.6)}
+.maplibregl-ctrl-attrib{background:oklch(34.2% .091 262.9/.88)!important;
+  border-radius:8px!important;font-family:var(--font-sans)!important}
+.maplibregl-ctrl-attrib,.maplibregl-ctrl-attrib a{color:var(--muted-foreground)!important;
+  font-size:10px!important}
+.maplibregl-ctrl-scale{background:oklch(34.2% .091 262.9/.7)!important;border-color:var(--border)!important;
+  color:var(--muted-foreground)!important;font-size:10px!important}
+
+@media (max-width:900px){
+  header{height:auto;padding:12px 15px;gap:12px;flex-wrap:wrap}
+  .wrap{grid-template-columns:1fr;height:auto}
+  #map{height:56vh}
+  aside{border-left:none;border-top:1px solid var(--border);padding:18px 15px 30px}
+  h1{font-size:19px}
+  nav a{font-size:12.5px;padding:8px 10px}
+  .tag{display:none}
+}
 </style>
 </head>
 <body>
 <header>
-  <span class="wordmark"><b>instruct</b><span>Brain</span></span>
-  <span class="tag">Style study - A - Console</span>
+  <a class="wordmark" href="#"><b>instruct</b><i>Brain</i></a>
+  <nav>
+    <a href="#">Work</a>
+    <a href="#">Reports</a>
+    <a href="#" class="on">Map</a>
+  </nav>
+  <span class="tag"><s></s>Style study A - Console</span>
 </header>
+
 <div class="wrap">
   <div id="map"></div>
   <aside>
-    <div class="styles">
-      <a href="a-console.html" class="on">A</a>
-      <a href="b-atlas.html" class="">B</a>
-      <a href="c-blueprint.html" class="">C</a>
-    </div>
+    <div class="eyebrow">Geography</div>
     <h1>Where the work is</h1>
-    <div class="sub">The navy control room, continued onto the map.</div>
+    <div class="sub">Every project pinned from the postcode on the record. Live in green, past its date in red.</div>
+
     <div class="tiles">
       <div class="tile"><div class="n" id="tProj">-</div><div class="l">Projects</div></div>
       <div class="tile"><div class="n" id="tPins">-</div><div class="l">Pinned</div></div>
-      <div class="tile bad"><div class="n" id="tLate">-</div><div class="l">Past their date</div></div>
+      <div class="tile late"><div class="n" id="tLate">-</div><div class="l">Past their date</div></div>
       <div class="tile"><div class="n" id="tNoAddr">-</div><div class="l">No address</div></div>
     </div>
-    <span class="flag">Click a pin or a row</span>
+
+    <div class="legend"><span><i></i>On track</span><span><i class="bad"></i>Past their date</span></div>
     <div class="pin-list" id="list"></div>
     <div id="detail"></div>
+
     <div class="note">Pins come from the postcode on the project, geocoded with postcodes.io - free, no key,
-      UK only. A project with no postcode cannot be pinned and is counted rather than hidden.</div>
+      UK only. A project with no postcode cannot be pinned and is counted rather than hidden.
+      Basemap: OpenFreeMap vector tiles, styled in the instructBrain palette.</div>
   </aside>
 </div>
+
 <script>
 const PROJECTS = [{"name": "11 - 13 Bruton Street", "ref": "Fire Checks", "address": "11-13 Bruton Street, London, W1J 6JH", "postcode": "W1J 6JH", "lat": 51.510721, "lng": -0.143776, "items": 28, "overdue": 0, "last": "16 Oct 2026", "ward": "West End, Westminster"}, {"name": "instructSite Development", "ref": "Test", "address": "244-278 Crondal Street, London, N1 6JF", "postcode": "N1 6JF", "lat": 51.53092, "lng": -0.080683, "items": 206, "overdue": 29, "last": "16 Oct 2026", "ward": "Hoxton East and Shoreditch, Hackney"}, {"name": "Test project", "ref": "TEST-002", "address": "", "postcode": null, "items": 0, "overdue": 0, "last": null}, {"name": "Test project", "ref": "TEST-002", "address": "", "postcode": null, "items": 0, "overdue": 0, "last": null}];
-const PIN_LATE = "#ff5a4d", PIN_OK = "#57FF00";
+
+/* brand colours for the map, hex because MapLibre has no oklch parser -
+   values converted from the same oklch tokens above, not sampled by eye */
+const ACCENT = "#57ff00";   /* oklch(87.73% .2803 139.6) */
+const FAIL   = "#ff6a86";   /* oklch(74% .2 13)          */
+const INK    = "#1e3667";   /* oklch(34.2% .091 262.9)   */
+
 const pinned = PROJECTS.filter(p => p.lat);
 const noAddr = PROJECTS.length - pinned.length;
 document.getElementById("tProj").textContent = PROJECTS.length;
@@ -118,52 +220,72 @@ document.getElementById("tPins").textContent = pinned.length;
 document.getElementById("tLate").textContent = PROJECTS.reduce((s,p)=>s+p.overdue,0);
 document.getElementById("tNoAddr").textContent = noAddr;
 
-const STYLE = {
-  version: 8,
-  sources: { base: { type:"raster", tileSize:256,
-    tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-    attribution:"&copy; OpenStreetMap contributors" } },
-  layers: [ { id:"bg", type:"background", paint:{ "background-color":"#e9edf2" } },
-            { id:"base", type:"raster", source:"base", paint:{"raster-saturation":-0.78,"raster-hue-rotate":196,"raster-brightness-max":0.46,"raster-contrast":0.28} } ]
-};
-const map = new maplibregl.Map({ container:"map", style:STYLE, center:[-0.11,51.521], zoom:11.4 });
+const map = new maplibregl.Map({
+  container: "map",
+  style: "a-console-style.json",
+  center: [-0.105, 51.5215],
+  zoom: 12.1,
+  attributionControl: {compact:true}
+});
 map.addControl(new maplibregl.NavigationControl({showCompass:false}), "top-right");
+window.__map = map;
+window.__errs = [];
+map.on("error", e => window.__errs.push(String(e && e.error && e.error.message || e)));
+map.addControl(new maplibregl.ScaleControl({maxWidth:80, unit:"metric"}), "bottom-left");
+
+let selected = null;
+
 map.on("load", () => {
   map.addSource("projects", { type:"geojson", data:{ type:"FeatureCollection",
-    features: pinned.map(p => ({ type:"Feature", properties:{ name:p.name, overdue:p.overdue },
+    features: pinned.map(p => ({ type:"Feature", properties:{ i:pinned.indexOf(p), overdue:p.overdue },
       geometry:{ type:"Point", coordinates:[p.lng,p.lat] } })) } });
-  map.addLayer({ id:"halo", type:"circle", source:"projects",
-    paint:{ "circle-radius":19, "circle-color":["case",[">",["get","overdue"],0],PIN_LATE,PIN_OK],
-             "circle-opacity":0.22 } });
+
+  map.addLayer({ id:"pin-halo", type:"circle", source:"projects",
+    paint:{ "circle-radius":["case",["==",["get","i"],selected ?? -1],26,17],
+            "circle-color":["case",[">",["get","overdue"],0],FAIL,ACCENT],
+            "circle-opacity":0.18 } });
+
   map.addLayer({ id:"pins", type:"circle", source:"projects",
-    paint:{ "circle-radius":8, "circle-color":["case",[">",["get","overdue"],0],PIN_LATE,PIN_OK],
-             "circle-stroke-width":2.5, "circle-stroke-color":"#ffffff" } });
-  map.on("click","pins",e => select(pinned.find(x=>x.name===e.features[0].properties.name)));
+    paint:{ "circle-radius":["case",["==",["get","i"],selected ?? -1],9,6.5],
+            "circle-color":["case",[">",["get","overdue"],0],FAIL,ACCENT],
+            "circle-stroke-width":2, "circle-stroke-color":INK } });
+
+  map.on("click","pins", e => select(pinned[e.features[0].properties.i]));
   map.on("mouseenter","pins",()=>map.getCanvas().style.cursor="pointer");
   map.on("mouseleave","pins",()=>map.getCanvas().style.cursor="");
 });
 
-function select(p){
-  map.flyTo({center:[p.lng,p.lat], zoom:17, speed:1.1, curve:1.4});
+function select(p, fly=true){
+  selected = pinned.indexOf(p);
+  if(map.getLayer("pins")){
+    map.setPaintProperty("pins","circle-radius",["case",["==",["get","i"],selected],9,6.5]);
+    map.setPaintProperty("pin-halo","circle-radius",["case",["==",["get","i"],selected],26,17]);
+  }
+  if(fly) map.flyTo({center:[p.lng,p.lat], zoom:16.4, speed:1.05, curve:1.42});
+  document.querySelectorAll(".pin-row[data-i]").forEach(b=>
+    b.setAttribute("aria-current", (+b.dataset.i === selected) ? "true" : "false"));
   document.getElementById("detail").innerHTML = `
     <div class="card">
       <h2>${p.name}</h2>
       <div class="addr">${p.address}<br>${p.ward}</div>
+      <div class="kv"><span>Reference</span><b>${p.ref}</b></div>
       <div class="kv"><span>Items on record</span><b>${p.items}</b></div>
-      <div class="kv"><span>Past their date</span><b style="color:${p.overdue?PIN_LATE:"inherit"}">${p.overdue}</b></div>
+      <div class="kv"><span>Past their date</span><b style="color:${p.overdue?"var(--fail)":"var(--brand-accent)"}">${p.overdue}</b></div>
       <div class="kv"><span>Last report</span><b>${p.last ?? "-"}</b></div>
-      <div class="sv"><div class="err"><b>Street level</b><br>Provider loads here once chosen -
-        Mapillary (free, crowdsourced) or Google Street View (key, billing, caching limits).</div></div>
+      <div class="sv"><div class="err"><b>Street level</b>
+        Provider loads here once chosen - Mapillary (free, crowdsourced) or Google Street View
+        (key, billing, caching limits). Frame is reserved so the layout does not move.</div></div>
     </div>`;
 }
 
 document.getElementById("list").innerHTML =
-  pinned.map((p,i)=>`<button class="pin-row" data-i="${i}"><span class="dot ${p.overdue?"late":""}"></span>
+  pinned.map((p,i)=>`<button class="pin-row" data-i="${i}"><span class="dot ${p.overdue?"bad":""}"></span>
      <span><span class="nm">${p.name}</span><span class="ad">${p.address}</span></span></button>`).join("") +
-  PROJECTS.filter(p=>!p.lat).map(p=>`<button class="pin-row" disabled style="opacity:.5;cursor:default">
-     <span class="dot" style="opacity:.4"></span><span><span class="nm">${p.name}</span>
+  PROJECTS.filter(p=>!p.lat).map(p=>`<button class="pin-row" disabled>
+     <span class="dot" style="opacity:.45"></span><span><span class="nm">${p.name}</span>
      <span class="ad">No address - cannot be pinned</span></span></button>`).join("");
-document.querySelectorAll(".pin-row[data-i]").forEach(b=>b.addEventListener("click",()=>select(pinned[+b.dataset.i])));
+document.querySelectorAll(".pin-row[data-i]").forEach(b=>
+  b.addEventListener("click",()=>select(pinned[+b.dataset.i])));
 </script>
 </body>
 </html>
