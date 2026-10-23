@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>instructBrain - where the work is (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <style>
@@ -19,7 +22,8 @@
        font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   header{background:var(--bar);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:14px;
        border-bottom:3px solid var(--accent)}
-  header b{font-size:17px;letter-spacing:-.2px}
+  header b{font-family:"Audiowide","Sora",ui-sans-serif,system-ui,sans-serif;font-weight:400;
+       font-size:19px;letter-spacing:.2px;line-height:1}
   header b i{font-style:normal;color:var(--accent)}
   header .pill{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.08em;
        background:rgba(255,255,255,.14);padding:5px 9px;border-radius:999px;text-transform:uppercase}
@@ -50,9 +54,15 @@
   .kv:first-of-type{border-top:none}
   .kv b{font-variant-numeric:tabular-nums}
   .sv{margin-top:12px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0b1533}
-  .sv iframe{width:100%;height:230px;border:0;display:block}
-  .sv .err{padding:18px 16px;min-height:150px;font-size:12.5px;line-height:1.6}
-  .sv .err{color:#cfe0ff;font-size:12px;padding:14px}
+  .sv img{width:100%;height:auto;display:block}
+  .sv .err{padding:18px 16px;min-height:150px;font-size:12.5px;line-height:1.6;color:#cfe0ff}
+  .sv .err b{color:#fff;font-size:12.5px}
+  .sv .hdr{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+  .sv .badge{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+     color:var(--accent);border:1px solid rgba(87,255,0,.5);background:rgba(87,255,0,.12);
+     border-radius:5px;padding:2px 6px}
+  .sv .meta{display:block;margin-top:9px;font-size:11px;color:#9fb4d8}
+  .sv .meta a{color:#cfe0ff}
   .note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.45}
   .empty{color:var(--muted);font-size:13px}
   .flag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
@@ -88,7 +98,7 @@
     <div class="note">
       Pin position comes from the postcode on the project, geocoded with postcodes.io - free, no key, UK only.
       A project with no postcode in its address cannot be pinned, and is counted rather than hidden.
-      Street-level imagery is the open decision on this screen.
+      Street-level imagery comes from Mapillary: free, crowdsourced, CC BY-SA, no billing account.
     </div>
   </aside>
 </div>
@@ -175,6 +185,62 @@ map.on("load", () => {
   map.on("mouseleave", "pins", () => (map.getCanvas().style.cursor = ""));
 });
 
+// ---- Street level: Mapillary (free, crowdsourced, CC BY-SA) -----------------------
+// Needs an access token from a free Mapillary account. It is deliberately NOT in this
+// file: this page is public, and a token pasted here is a token given away. The token
+// arrives from the host (window.MAPILLARY_TOKEN) - server-side in the product.
+const MAPILLARY_TOKEN = window.MAPILLARY_TOKEN || "";
+const MAPILLARY_FIELDS = "id,thumb_1024_url,captured_at,compass_angle,geometry";
+
+function streetEmpty(p, title, body) {
+  return `<div class="err">
+      <div class="hdr"><b>Street level</b><span class="badge">Mapillary</span></div>
+      ${title ? `<div style="margin-bottom:5px">${title}</div>` : ""}
+      ${body}
+      <span class="meta">Imagery &copy; Mapillary contributors, CC BY-SA 4.0 - attribution is
+      compulsory. <a href="https://www.mapillary.com/" target="_blank" rel="noopener">mapillary.com</a></span>
+    </div>`;
+}
+
+async function loadStreet(p) {
+  const box = document.getElementById("sv");
+  if (!box) return;
+  if (!MAPILLARY_TOKEN) {
+    box.innerHTML = streetEmpty(p, "No imagery shown yet",
+      "Mapillary is the chosen provider - free, no card. This pane needs an access token before it " +
+      "can fetch a photo, and it stays empty rather than faking one.");
+    return;
+  }
+  box.innerHTML = `<div class="err">Looking for imagery within 50m of ${p.postcode}...</div>`;
+  const d = 0.00045, e = 0.00030;   // roughly 50m box at UK latitudes
+  const bbox = [p.lng - d, p.lat - e, p.lng + d, p.lat + e].join(",");
+  const url = "https://graph.mapillary.com/images?access_token=" + encodeURIComponent(MAPILLARY_TOKEN) +
+              "&fields=" + MAPILLARY_FIELDS + "&limit=1&bbox=" + bbox;
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("Mapillary HTTP " + r.status);
+    const j = await r.json();
+    const img = (j.data || [])[0];
+    if (!img) {
+      box.innerHTML = streetEmpty(p, "No imagery for this address",
+        "Mapillary has nothing within 50 metres here. New-build and rural sites often have none - " +
+        "this is a coverage gap, not a fault.");
+      return;
+    }
+    const when = img.captured_at ? new Date(img.captured_at).toLocaleDateString("en-GB",
+      { day: "numeric", month: "short", year: "numeric" }) : "date unknown";
+    box.innerHTML = `<img src="${img.thumb_1024_url}" alt="Street level at ${p.address}">
+      <span class="meta" style="padding:8px 10px;margin:0">
+        Captured ${when} &middot; &copy; Mapillary contributors, CC BY-SA 4.0 &middot;
+        <a href="https://www.mapillary.com/map/im/${img.id}" target="_blank" rel="noopener">open on Mapillary</a>
+      </span>`;
+  } catch (err) {
+    box.innerHTML = streetEmpty(p, "Mapillary could not be reached",
+      "The lookup failed: " + String(err.message || err) + ". The pane does not fall back to a " +
+      "stock photo - an empty state is honest, a wrong photo is not.");
+  }
+}
+
 function select(p) {
   map.flyTo({ center: [p.lng, p.lat], zoom: 17, speed: 1.1, curve: 1.4 });
   document.querySelectorAll(".pin-row[data-i]").forEach(b =>
@@ -186,13 +252,10 @@ function select(p) {
       <div class="kv"><span>Items on record</span><b>${p.items}</b></div>
       <div class="kv"><span>Past their date</span><b style="color:${p.overdue ? "#e2574c" : "#2e8a00"}">${p.overdue}</b></div>
       <div class="kv"><span>Last report</span><b>${p.last ?? "-"}</b></div>
-      <div class="sv" id="sv">
-        <div class="err"><b>Street level</b><br>
-          Provider not chosen yet. Mapillary is free and crowdsourced; Google Street View
-          needs a key, billing and has caching limits.</div>
-      </div>
+      <div class="sv" id="sv"><div class="err">Loading street level...</div></div>
       <div class="note">${p.postcode} geocoded with postcodes.io, precision 1 (building-level postcode).</div>
     </div>`;
+  loadStreet(p);
 }
 
 document.getElementById("list").innerHTML = pinned.map((p, i) => `
